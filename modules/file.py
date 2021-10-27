@@ -18,20 +18,6 @@ class FileManager:
             else:
                 alocSize = 0
         return -1
-
-    def SetFileInMemory(self, fileName, memIdx, fileSize, creatorPID):
-        fileInfo = self.fileTable.get(fileName, [-1, -1])
-        
-        if fileInfo[0] == -1:
-            self.fileTable[fileName] = [memIdx, creatorPID]
-        else:
-            #print("FALHA NA CRIACAO. ARQUIVO ", fileName, " JA EXISTE")
-            return -1
-  
-        for offset in range(fileSize):
-            self.memory[memIdx + offset] = fileName
-
-        return 0
             
     def SetFileInMemory(self, fileDescription, creatorPID):
         fileInfo = self.fileTable.get(fileDescription[0], [-1, -1])
@@ -39,7 +25,7 @@ class FileManager:
         if fileInfo[0] == -1:
             self.fileTable[fileDescription[0]] = [int(fileDescription[1]), creatorPID]
         else:
-            #print("FALHA NA CRIACAO. ARQUIVO ", fileDescription[0], " JA EXISTE")
+            #arquivo ja existe
             return -1
   
         for offset in range(int(fileDescription[2])):
@@ -51,16 +37,13 @@ class FileManager:
         
     def DeleteFileInMemory(self, fileName, processId):
         fileInfo = self.fileTable.get(fileName, [-1, -1])
-        #print("ID PROCESSO DELETANDO ", processId)
-        #print(fileInfo)
-        #print(type(fileInfo[1]))
         if fileInfo[0] == -1:
-            #print("FALHA NA REMOCAO. ARQUIVO ", fileName, " NAO EXISTE")
+            #arquivo nao existe
             return -1
         elif processId != -1:
-            #print("FALHA NA REMOCAO. PROCESSO ", processId, " NAO POSSUI PERMISSAO PARA DELETAR ESSE ARQUIVO")
             
             if fileInfo[1] != processId:
+                #processo nao tem permissao para deletar esse arquivo
                 return -2
             else:
                 auxIdx = self.fileTable[fileName][0]
@@ -138,15 +121,12 @@ class FileManager:
                     #deletar arquivo
                     deleteResult = 0
                     priori = int(processes[int(opDescription[0])].priority)
-                    #print("PRIORIDADE ", priori)
 
                     if priori == 0:
                         #se for processo de tempo real, nao importa quem criou o arquivo, ele pode ser deletado
                         deleteResult = self.DeleteFileInMemory(opDescription[2], -1)
                     else:
                         deleteResult = self.DeleteFileInMemory(opDescription[2], int(opDescription[0]))
-
-                    #print("RESULTADO ", deleteResult)
                     
                     if deleteResult == 0:
                         print("Operacao ", opIdx, " => Sucesso")

@@ -30,7 +30,6 @@ class Process:
 class ProcessManager:
     def __init__(self, processes):
         self.processes = []
-        #self.readyProcesses = []
         self.rtProcesses = []
         self.userProcesses = []
         self.readyRtProcesses = []
@@ -54,7 +53,6 @@ class ProcessManager:
         
     
     def Run(self):
-        #self.userProcesses.sort(key=lambda x: x.priority)
 
         lastProcessExecuted = -1
         currentProcessExecuting = -1
@@ -102,7 +100,6 @@ class ProcessManager:
             else:
                 # existe um processo executando
                 if self.processTable[currentProcessExecuting].priority == 0:
-                    #print("capivara")
                     # continua processo real time que tava antes
                     self.processTable[currentProcessExecuting].timeExecuted += 1
                     print("P", currentProcessExecuting, " instruction ", self.processTable[currentProcessExecuting].timeExecuted)
@@ -114,7 +111,6 @@ class ProcessManager:
                     else:
                         lastProcessExecuted = currentProcessExecuting
                 else:
-                    #print("wada wada")
                     # checar se eh preciso trocar qual processo tem posse da CPU
                     if(len(self.readyRtProcesses) > 0):
                         # existe processo rt pronto; parar processo atual para colocar o rt

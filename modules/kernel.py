@@ -15,7 +15,6 @@ class Kernel:
     
         with open(processFiles, 'r') as p:
             processesDesc = p.read().splitlines()
-        #print(processesDesc)
 
         numProcesses = len(processesDesc)
         globalProcessMemoryOffset = 0
